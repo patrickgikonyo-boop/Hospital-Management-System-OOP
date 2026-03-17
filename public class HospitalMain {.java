@@ -1,27 +1,79 @@
+import java.util.Scanner;
+
 public class HospitalMain {
 
     public static void main(String[] args) {
 
-        // Creating objects
-        Patient p1 = new Patient("John Doe", 101, "0712345678", "Malaria");
-        Doctor d1 = new Doctor("Dr. Smith", 201, "0723456789", "General Medicine", 150000);
-        Nurse n1 = new Nurse("Jane", 301, "0734567890", "Emergency");
+        Scanner scanner = new Scanner(System.in);
 
-        // Demonstrating inheritance
-        p1.displayRole();
-        d1.displayRole();
-        n1.displayRole();
+        try {
+            // Patient input
+            System.out.print("Enter Patient Name: ");
+            String pname = scanner.nextLine();
 
-        // Demonstrating polymorphism
-        d1.performDuties();
-        n1.performDuties();
+            System.out.print("Enter Patient ID: ");
+            int pid = scanner.nextInt();
+            scanner.nextLine();
 
-        // Bill
-        Bill bill = new Bill(p1, 5000);
-        bill.printBill();
+            System.out.print("Enter Phone: ");
+            String phone = scanner.nextLine();
 
-        // Appointment
-        Appointment appointment = new Appointment(p1, d1, "20 May 2026");
-        appointment.schedule();
+            System.out.print("Enter Illness: ");
+            String illness = scanner.nextLine();
+
+            Patient patient = new Patient(pname, pid, phone, illness);
+
+            // Doctor input
+            System.out.print("\nEnter Doctor Name: ");
+            String dname = scanner.nextLine();
+
+            System.out.print("Enter Doctor ID: ");
+            int did = scanner.nextInt();
+            scanner.nextLine();
+
+            System.out.print("Enter Department: ");
+            String dept = scanner.nextLine();
+
+            System.out.print("Enter Salary: ");
+            double salary = scanner.nextDouble();
+
+            Doctor doctor = new Doctor(dname, did, phone, dept, salary);
+
+            // Display
+            System.out.println("\n--- DETAILS ---");
+            patient.displayRole();
+            doctor.displayRole();
+
+            doctor.performDuties();
+
+            // Bill
+            System.out.print("\nEnter Bill Amount: ");
+            double amount = scanner.nextDouble();
+
+            if (amount < 0) {
+                throw new IllegalArgumentException("Amount cannot be negative!");
+            }
+
+            Bill bill = new Bill(patient, amount);
+            bill.printBill();
+
+            // Appointment
+            scanner.nextLine();
+            System.out.print("\nEnter Appointment Date: ");
+            String date = scanner.nextLine();
+
+            Appointment appt = new Appointment(patient, doctor, date);
+            appt.schedule();
+
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("❌ Invalid input! Enter correct data type.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("❌ Unexpected error occurred.");
+        } finally {
+            scanner.close();
+            System.out.println("\nProgram ended safely.");
+        }
     }
 }
