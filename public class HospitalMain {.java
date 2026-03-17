@@ -3,7 +3,8 @@ import java.util.Scanner;
 public class HospitalMain {
 
     public static void main(String[] args) {
-
+Hospital hospital = new Hospital("Nairobi General Hospital");
+hospital.displayHospital();
         Scanner scanner = new Scanner(System.in);
 
         try {
