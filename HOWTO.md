@@ -58,3 +58,19 @@ The system ensures:
 1. Open project in VS Code
 2. Run HospitalMain.java
 3. Follow prompts in terminal
+ Collections Used
+The system uses ArrayList to store multiple patient objects dynamically.
+
+ File Handling Implemented
+
+ Saving Data
+- Uses FileWriter and BufferedWriter
+- Stores patient details in patients.txt
+
+ Loading Data
+- Uses FileReader and BufferedReader
+- Reads saved data and recreates patient objects
+
+ Benefits
+- Data persists even after program ends
+- Multiple records can be managed efficiently
