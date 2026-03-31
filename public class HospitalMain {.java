@@ -1,19 +1,25 @@
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
 
 public class HospitalMain {
 
     public static void main(String[] args) {
-Hospital hospital = new Hospital("Nairobi General Hospital");
-hospital.displayHospital();
+
         Scanner scanner = new Scanner(System.in);
 
+        // COLLECTION
+        ArrayList<Patient> patients = new ArrayList<>();
+
         try {
-            // Patient input
+
+            // LOAD EXISTING DATA FROM FILE
+            loadPatientsFromFile(patients);
+
             System.out.print("Enter Patient Name: ");
-            String pname = scanner.nextLine();
+            String name = scanner.nextLine();
 
             System.out.print("Enter Patient ID: ");
-            int pid = scanner.nextInt();
+            int id = scanner.nextInt();
             scanner.nextLine();
 
             System.out.print("Enter Phone: ");
@@ -22,59 +28,79 @@ hospital.displayHospital();
             System.out.print("Enter Illness: ");
             String illness = scanner.nextLine();
 
-            Patient patient = new Patient(pname, pid, phone, illness);
+            Patient p = new Patient(name, id, phone, illness);
 
-            // Doctor input
-            System.out.print("\nEnter Doctor Name: ");
-            String dname = scanner.nextLine();
+            // ADD TO COLLECTION
+            patients.add(p);
 
-            System.out.print("Enter Doctor ID: ");
-            int did = scanner.nextInt();
-            scanner.nextLine();
-
-            System.out.print("Enter Department: ");
-            String dept = scanner.nextLine();
-
-            System.out.print("Enter Salary: ");
-            double salary = scanner.nextDouble();
-
-            Doctor doctor = new Doctor(dname, did, phone, dept, salary);
-
-            // Display
-            System.out.println("\n--- DETAILS ---");
-            patient.displayRole();
-            doctor.displayRole();
-
-            doctor.performDuties();
-
-            // Bill
-            System.out.print("\nEnter Bill Amount: ");
-            double amount = scanner.nextDouble();
-
-            if (amount < 0) {
-                throw new IllegalArgumentException("Amount cannot be negative!");
+            // DISPLAY ALL PATIENTS
+            System.out.println("\n--- ALL PATIENTS ---");
+            for (Patient pat : patients) {
+                pat.displayRole();
             }
 
-            Bill bill = new Bill(patient, amount);
-            bill.printBill();
+            // SAVE TO FILE
+            savePatientsToFile(patients);
 
-            // Appointment
-            scanner.nextLine();
-            System.out.print("\nEnter Appointment Date: ");
-            String date = scanner.nextLine();
-
-            Appointment appt = new Appointment(patient, doctor, date);
-            appt.schedule();
-
-        } catch (java.util.InputMismatchException e) {
-            System.out.println("❌ Invalid input! Enter correct data type.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("❌ " + e.getMessage());
+        } catch (InputMismatchException e) {
+            System.out.println("❌ Invalid input type.");
         } catch (Exception e) {
-            System.out.println("❌ Unexpected error occurred.");
+            System.out.println("❌ Error: " + e.getMessage());
         } finally {
             scanner.close();
             System.out.println("\nProgram ended safely.");
         }
     }
+
+    //  FILE WRITE 
+    public static void savePatientsToFile(ArrayList<Patient> patients) {
+
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("patients.txt"));
+
+            for (Patient p : patients) {
+                writer.write(p.getName() + "," + p.getId() + "," + p.getPhone() + "," + p.getIllness());
+                writer.newLine();
+            }
+
+            writer.close();
+            System.out.println("✅ Patients saved to file.");
+
+        } catch (IOException e) {
+            System.out.println("❌ Error saving file.");
+        }
+    }
+
+    //  FILE READ 
+    public static void loadPatientsFromFile(ArrayList<Patient> patients) {
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("patients.txt"));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+
+                String[] data = line.split(",");
+
+                String name = data[0];
+                int id = Integer.parseInt(data[1]);
+                String phone = data[2];
+                String illness = data[3];
+
+                Patient p = new Patient(name, id, phone, illness);
+                patients.add(p);
+            }
+
+            reader.close();
+            System.out.println("✅ Patients loaded from file.");
+
+        } catch (FileNotFoundException e) {
+            System.out.println("No previous file found. Starting fresh.");
+        } catch (IOException e) {
+            System.out.println("❌ Error reading file.");
+        }
+    }
 }
+        
+    
+
